@@ -2,7 +2,6 @@
   "A websocket handler that passes messages back and forth to an already running nREPL server."
   (:require
    [taoensso.timbre :refer [debug info error]]
-    ;; [clojure.tools.logging :refer (debug info warn error)]
    [clojure.edn :as edn]
    [ring.adapter.jetty9 :as jetty]
    [nrepl.server :as nrepl-server]

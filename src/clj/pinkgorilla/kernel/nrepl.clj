@@ -2,7 +2,6 @@
   (:require
    [clojure.tools.logging :as log]
    [com.stuartsierra.component :as component]
-
    [nrepl.server :as srv]
    [nrepl.core :as nrepl]
    [pinkgorilla.middleware.cider :as mw-cider]))
@@ -26,9 +25,8 @@
            [handler server]
   component/Lifecycle
   (start [self]
-    (let [nrepl-port (get-in self [:config :config :nrepl-port])
-          nrepl-host (get-in self [:config :config :nrepl-host])
-          nrepl-port-file (get-in self [:config :config :nrepl-port-file])]
+    (let [config (get-in self [:config :config])
+          {:keys [nrepl-port nrepl-host nrepl-port-file]} config]
       (if nrepl-port
         (if nrepl-host
           (do
@@ -47,16 +45,4 @@
 (defn new-cider-repl-server
   []
   (map->NReplServer {}))
-
-#_(def nrepl (atom nil))
-
-#_(defn start-and-connect
-    ([nrepl-requested-port repl-port-file nrepl-connect-fn]
-     (let [nr (srv/start-server :port nrepl-requested-port
-                                :handler (nrepl-handler false cider/cider-middleware))
-           nrepl-port (:port nr)]
-       (println "Started nREPL server on port" nrepl-port)
-       (reset! nrepl nr)
-       (nrepl-connect-fn "localhost" nrepl-port)
-       (spit (doto repl-port-file .deleteOnExit) nrepl-port))))
 

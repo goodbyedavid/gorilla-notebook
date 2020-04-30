@@ -1,4 +1,4 @@
-(ns pinkgorilla.routes)
+(ns pinkgorilla.components.google-analytics)
 
 ;; awb99: route helper with google analytics 
 

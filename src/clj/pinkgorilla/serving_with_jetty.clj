@@ -1,12 +1,12 @@
 (ns pinkgorilla.serving-with-jetty
   (:require
-   [de.otto.tesla.stateful.handler :as handler]
-   [compojure.core :as comp]
    [clojure.tools.logging :as log]
-   [com.stuartsierra.component :as c]
-   [de.otto.tesla.serving-with-jetty :as tesla-jetty]
    [ring.adapter.jetty9 :as jetty-ws]
-   [ring.util.response :as resp])
+   [ring.util.response :as resp]
+   [compojure.core :as comp]
+   [de.otto.tesla.serving-with-jetty :as tesla-jetty]
+   [de.otto.tesla.stateful.handler :as handler]
+   [com.stuartsierra.component :as c])
   (:gen-class))
 
 (defrecord JettyServer [config handler]

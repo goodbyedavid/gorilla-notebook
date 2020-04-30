@@ -77,10 +77,11 @@
 (reg-event-fx
  :set-clj-secrets
  (fn [{:keys [db]}]
-   (let [secret-result (r/atom {})]
+   (let [secret-result (r/atom {})
+         secrets (get-in db [:settings :secrets])
+         secrets (if (nil? secrets) {} secrets)]
      (info "setting clj repl secrets..")
-     (clj secret-result "pinkgorilla.notebook.secret/set-secrets!"
-          (get-in db [:settings :secrets]))
+     (clj secret-result "pinkgorilla.notebook.secret/set-secrets!" secrets)
      {})))
 
 (reg-event-db

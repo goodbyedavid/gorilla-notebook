@@ -15,23 +15,10 @@
 ;; lein deps :tree    shows if old versions are used (output in beginning)
 ;; lein ancient       shows outdated dependncies (more recent version available on clojars)
 
-;; The first dependency determines the dependency version:
-;; see: https://github.com/technomancy/leiningen/blob/stable/doc/FAQ.md
-;; :exclusions can be used to fix this issue
-;; [Z "1.0.9"]
-;; [X "1.3.2"]
-;;   [Z "2.0.1"]
-;; ==> the direct dependency ([Z "1.0.9"]) is picked, as it is closest to the root.
-;; [X "1.3.2"]
-;;   [Z "2.0.1"]
-;; [Y "1.0.5"]
-;; [Z "2.1.3"]
-;; ==> the dependency X comes first, and therefore [Z "2.0.1"] is picked
-
 ;; managed deendencies only define the version of a dependency,
 ;; if no dependeny needs them, then they are not included
   :managed-dependencies [; to avoid a :exclusion mess, we define certain versions numbers centrally
-                         
+
                          ; clojure
                          [org.clojure/clojure "1.10.1"]
                          [org.clojure/core.async "1.1.587"]
@@ -72,7 +59,7 @@
                          [org.pinkgorilla/gorilla-explore "0.1.20"]
                          [org.pinkgorilla/kernel-cljs-shadowdeps "0.0.12"]
                          [org.pinkgorilla/kernel-cljs-shadow "0.0.25"]
-                         
+
                          ; webserver
                          [http-kit "2.3.0"]
 
@@ -419,10 +406,7 @@
              :uberjar {:hooks       [minify-assets.plugin/hooks]
                        :aot         :all
                        :omit-source true
-                       :classifier  "standalone"}
-             :python  {:dependencies [[cnuernber/libpython-clj "1.30"]]
-                       ;; :uberjar-name "gorilla-notebook-standalone-with-python.jar"
-                       }}
+                       :classifier  "standalone"}}
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"
                              :linux   "xdg-open"}}})

@@ -1,4 +1,4 @@
-(ns pinkgorilla.notebook-app.handle
+(ns pinkgorilla.notebook-app.wrap
   "Ring handlers for Gorilla server functions. Broken out into their own namespace so as to be usable 
    without having to use Gorilla's embedded web server. 
    Note that as well as the handlers there are two functions in this NS,
@@ -27,8 +27,9 @@
   [_]
   (res/redirect (str "." (get-war-prefix) "worksheet.html")))
 
-;; a wrapper for JSON API calls
+
 (defn wrap-api-handler
+  "a wrapper for JSON API calls"  
   [handler]
   (-> handler
       (wrap-defaults api-defaults)
@@ -40,7 +41,6 @@
   (wrap-cors handler
              :access-control-allow-origin [#".*"]
              :access-control-allow-methods [:get]))
-
 
 ;; API endpoint for getting webapp configuration information
 
