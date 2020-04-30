@@ -1,4 +1,4 @@
-(ns pinkie.ws
+(ns pinkgorilla.pinkie.ws
   (:require
    [clojure.string :as str]
    [cljs.core.async :as async  :refer (<! >! put! chan)]
@@ -80,7 +80,6 @@
   (reset! router_
           (sente/start-client-chsk-router!
            ch-chsk event-msg-handler)))
-
 
 (debugf "testing 123...")
 

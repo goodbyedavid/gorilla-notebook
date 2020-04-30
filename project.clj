@@ -97,7 +97,7 @@
                   :exclusions [com.cognitect/transit-clj
                                com.cognitect/transit-cljs]] ; websockets with core.async
                  [org.clojure/data.json] ; managed-version
-
+                 
                  ;; WEB SERVER
                  [ring "1.7.1"]
                  [ring-cors "0.1.13"]
@@ -126,22 +126,30 @@
                  ; [irresponsible/tentacles "0.6.6"] ; github api (needed by encoding and explore)
                  ;[clj-time "0.15.2"] ; needed for notebook exploration ui
                  [com.andrewmcveigh/cljs-time "0.5.2"] ;  notebook exploration ui
-
+                 
+                 ; Pinkie
+                 [bk/ring-gzip "0.3.0"] ; from oz
+                 [com.taoensso/encore "2.119.0"] ; needed by sente
+                                        ;[com.taoensso/sente "1.13.1"] ; from oz
+                 ;[com.taoensso/sente "1.15.0"] ; already included above
+                 [secretary "1.2.3"]
+                 [aleph "0.4.6"] ; from oz
+                 
                  ; CLJ Kernel
                  [nrepl]
                  [org.pinkgorilla/gorilla-middleware]
                  [clj-commons/pomegranate "1.2.0"] ; add-dependency in clj kernel TODO : Replace pomegranate with tools alpha
                  [org.clojure/tools.cli "1.0.194"]
                  ;[clojail "1.0.6"] ; Sandboxing - not sure whether we want to cope with this level of detail
-
+                 
                  ; PINKIE
                  [org.pinkgorilla/gorilla-renderable-ui] ; kernels (clj and cljs) needs renderable (cljs kernel is implemented in notebook)
                  [org.pinkgorilla/gorilla-ui] ; ui renderer impls
-
+                 
                  ; CLJS Kernel
                  ;[org.pinkgorilla/kernel-cljs-shadowdeps
                  ; :exclusions [*/*]] ; add precompiled bundles via jar resources
-
+                 
                  ;; [com.rpl/specter "0.13.2"]
                  ]
 
@@ -240,17 +248,11 @@
             ["run" "-m" "clj-kondo.main"]
             "lint"                             ^{:doc "Lint for dummies"}
             ["clj-kondo" "--lint" "src/clj/pinkgorilla"]
-            "coverage"                             ^{:doc "Code coverage for dummies"}
+            "coverage"                         ^{:doc "Code coverage for dummies"}
             ["with-profile" "+cljs" "cloverage"]
             "bump-version"                     ^{:doc "Roll versions artefact version"}
             ["change" "version" "leiningen.release/bump-version"]
-            "build-shadow-pinkie"
-            ["with-profile" "+pinkie,+cljs" "run" "-m" "shadow.cljs.devtools.cli"  "compile" ":pinkie"]
-            "watch-shadow-pinkie"
-            ["with-profile" "+pinkie" "run" "-m" "shadow.cljs.devtools.cli"  "watch" ":pinkie"]
-            "run-pinkie"
-            ["with-profile" "+pinkie" "run" "-m" "pinkie.app"]
-            "test-js-compile"                          ^{:doc "compile and Test JavaScript."}
+            "test-js-compile"                  ^{:doc "compile and Test JavaScript."}
             ["do" ["build-shadow-ci"] "test-js"]}
 
 
@@ -308,34 +310,6 @@
                                         (pjstadig.humane-test-output/activate!)]
 
                        :env            ^:replace {:dev true}}
-
-             :pinkie    {:source-paths ["src/pinkie"]
-                         :main ^:skip-aot pinkie.app
-                         :dependencies [[thheller/shadow-cljs "2.8.106"
-                                         :exclusions [hawk]]
-                                        [thheller/shadow-cljsjs "0.0.21"]
-                                        [bk/ring-gzip "0.3.0"] ; from oz
-                                        [com.taoensso/encore "2.119.0"] ; needed by sente
-                                        ;[com.taoensso/sente "1.13.1"] ; from oz
-                                        [com.taoensso/sente "1.15.0"] ; already included above
-                                        [aleph "0.4.6"] ; from oz
-                                        ; gorilla:cljs profile
-                                        [reagent "0.10.0"  ; was 0.8.1
-                                         :exclusions [org.clojure/tools.reader
-                                                      cljsjs/react
-                                                      cljsjs/react-dom]]
-                                        [re-frame "0.10.9"]
-                                        [re-catch "0.1.4"]
-                                        [prismatic/dommy "1.1.0"]
-                                        [day8.re-frame/http-fx "0.1.6"] ; reframe based http requests
-                                        [day8.re-frame/undo "0.3.3"]
-                                        [day8.re-frame/re-frame-10x "0.6.2"]
-                                        [secretary "1.2.3"]
-                                        [re-com "2.8.0"]
-                                        [org.pinkgorilla/kernel-cljs-shadow]]
-                         :repl-options {:init-ns        pinkie.app
-                                        :port             4003
-                                        :nrepl-middleware [shadow.cljs.devtools.server.nrepl/middleware]}}
 
              :cljs    {:dependencies [;; CLOJURESCRIPT
                                       [org.clojure/clojurescript

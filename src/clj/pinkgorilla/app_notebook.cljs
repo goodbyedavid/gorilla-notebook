@@ -14,6 +14,7 @@
    [pinkgorilla.codemirror.core :as editor]
    [pinkgorilla.routes :as routes]
    [pinkgorilla.kernel.nrepl :as nrepl-kernel]
+   [pinkgorilla.pinkie.core :refer [pinkie-start!]]
    ;[pinkgorilla.10x.config :refer [configure-10x!]]
    ))
 
@@ -23,6 +24,7 @@
 (defn ^:export init-notebook! []
  ; (configure-10x!) 
   (routes/app-routes)
+  (pinkie-start!)
   (editor/configure-cm-globally!)
   (let [app-url (application-url)
         route (:anchor app-url)

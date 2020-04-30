@@ -16,6 +16,7 @@
    [pinkgorilla.notebook-app.cli :as cli]
    [pinkgorilla.notebook.secret] ; bring to scope
    [pinkgorilla.notebook.repl] ; bring to scope
+   [pinkgorilla.pinkie.core :refer [start-heartbeats!]]
     ;; TODO For notebook compat - fails when called on startup : Could not find a suitable classloader to modify from clojure.lang.LazySeq@532d8051
     ;; #'nrepl.middleware.session/session
    )
@@ -105,6 +106,7 @@
           ]
       (spit (doto gorilla-port-file .deleteOnExit) webapp-port)
       (explore-directories-start)
+      (start-heartbeats!)
       (info (str "Running at http://" ip ":" webapp-port "/worksheet.html ."))
       s)))
 

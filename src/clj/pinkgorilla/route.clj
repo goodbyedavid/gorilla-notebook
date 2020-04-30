@@ -3,20 +3,20 @@
    the actual loading of the routes is handled via tesla.
    tesla gets the handler as a string (namespace/function)
 
-   websockets are handled via jetty config.
-
-  "
-  
+   websockets are handled via jetty config."
   (:require
    [taoensso.timbre :refer [info]]
    [compojure.core :as compojure :refer [defroutes routes context GET POST]]
    [compojure.route :refer [files resources not-found] :as compojure-route]
    [selmer.parser :as sel]
+   [ring.middleware.gzip :refer [wrap-gzip]]
+   [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.session :refer [wrap-session]]
    ;;PinkGorilla Libraries
    [pinkgorilla.middleware.cider :as mw-cider]
    [pinkgorilla.ui.hiccup_renderer :as renderer]   ; this is needed to bring the render implementations into scope
    ;;Pinkorilla Notebook   
+   [pinkgorilla.pinkie.core :refer [pinkie-routes]]
    [pinkgorilla.notebook-app.wrap :refer [wrap-api-handler wrap-cors-handler redirect-app config get-war-prefix]]
    [pinkgorilla.storage.storage-handler :refer [save-notebook load-notebook]]
    [pinkgorilla.explore.explore-handler :refer [gorilla-files req-explore-directories-async]]))
@@ -56,6 +56,15 @@
   (-> api-handlers
       (wrap-api-handler)
       (wrap-cors-handler))
+  (-> pinkie-routes
+      ;(wrap-defaults site-defaults)
+      (wrap-defaults
+       (-> site-defaults
+           (assoc-in [:security :anti-forgery] true)))
+      ;(ring.middleware.keyword-params/wrap-keyword-params)
+      ;(ring.middleware.params/wrap-params)
+      ;(wrap-cljsjs)
+      (wrap-gzip))
   resource-handlers)
 
 (def default-handler

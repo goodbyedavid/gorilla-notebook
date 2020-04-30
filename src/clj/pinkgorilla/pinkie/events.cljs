@@ -1,4 +1,4 @@
-(ns pinkie.notebook
+(ns pinkgorilla.pinkie.events
   "process-instructions from pinkie clj server"
   (:require
    [re-frame.core :refer [reg-event-db dispatch-sync dispatch]]
