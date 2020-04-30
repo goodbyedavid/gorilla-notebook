@@ -14,7 +14,6 @@
    [taoensso.encore :as encore :refer (have have?)]
    [taoensso.timbre :as log :refer (tracef debugf infof warnf errorf)]
    [taoensso.sente  :as sente]
-   ;[taoensso.sente.server-adapters.aleph :refer (get-sch-adapter)]
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
    
    
@@ -83,8 +82,8 @@
   (GET  "/chsk" req
     (debugf "/chsk got: %s" req)
     (let [r (ring-ajax-get-or-ws-handshake req)]
-      (println "ws init: " r)
-      (println "token: " (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token]))
+      (println "pinkie ws init: " r)
+      (println "pinkie ws token: " (get-in req [:session :ring.middleware.anti-forgery/anti-forgery-token]))
       r))
 
   (POST "/chsk" req (ring-ajax-post req)))

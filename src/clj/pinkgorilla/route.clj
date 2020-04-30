@@ -84,7 +84,10 @@
     [prefix receive-fn]
     [(GET (str prefix "repl") [] (ws-relay/jetty-repl-ring-handler receive-fn))])
 
+
 (def nrepl-handler
+  "this is only needed by jetty-ws-relay and jee-interop
+   httpkit handler has it in its own namespace"
   (atom (cider-handler)))
 
 #_(def default-repl-handlers (create-repl-handlers "/" (partial ws-relay/on-receive-mem nrepl-handler)))

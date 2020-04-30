@@ -9,7 +9,6 @@
                                      :username :env/release_username
                                      :password :env/release_password
                                      :sign-releases false}]]
-;; Deps: clj, cljs or cljc - that is the question!
 
 ;; Use this to check depencencies:
 ;; lein deps :tree    shows if old versions are used (output in beginning)
@@ -75,6 +74,7 @@
                  [org.clojure/core.async]
                  [org.clojure/tools.reader "1.3.2"]
                  [org.clojure/core.match "1.0.0"]
+
                  ;; CONFIGURATION / LOGGING / SYSTEM MANAGEMENT
                  [grimradical/clj-semver "0.3.0" :exclusions [org.clojure/clojure]]
                  ;; TODO: What logging do we actually want/need behind the scenes and what are we using directly ?
@@ -88,17 +88,15 @@
                  [com.stuartsierra/component "0.4.0"]
                  [org.danielsz/system "0.4.3"
                   :exclusions [io.aviso/pretty]] ; newer version in com.taoensso/timbre
-                 ;[de.otto/tesla-microservice "0.13.1"]
-                 [de.otto/tesla-microservice "0.15.1"]
-                 
+
                  ;; ENCODING / SERIALIZATION
-                 [com.taoensso/sente "1.15.0"]
-                 ;; Chord needed for clojure?
-                 [jarohen/chord "0.8.1"
+                 [com.taoensso/sente "1.15.0"] ; pinkie websocket
+                 [com.taoensso/encore "2.119.0"] ; needed by sente
+                 [jarohen/chord "0.8.1" ; nrepl websocket
                   :exclusions [com.cognitect/transit-clj
                                com.cognitect/transit-cljs]] ; websockets with core.async
-                 [org.clojure/data.json] ; managed-version
-                 
+                 [org.clojure/data.json]
+
                  ;; WEB SERVER
                  [ring "1.7.1"]
                  [ring-cors "0.1.13"]
@@ -112,15 +110,19 @@
                  [javax.websocket/javax.websocket-api "1.1"]
                  [javax.servlet/javax.servlet-api "4.0.1"]
                  ;; [org.eclipse.jetty.websocket/websocket-server "9.4.12.v20180830"]
-                 ;[de.otto/tesla-jetty "0.2.6"
-                 ; :exclusions [org.eclipse.jetty/jetty-server
-                 ;              org.eclipse.jetty/jetty-servlet]]
                  [de.otto/tesla-httpkit "1.0.2"]
-                 
+                 [bk/ring-gzip "0.3.0"] ; from oz
+
                  [compojure "1.6.1"] ; Routing
                  [selmer "1.12.18"]
                  ;; Bringing it in here bc that is where the websocket "processors" come in
-                 [info.sunng/ring-jetty9-adapter "0.12.5"]
+                 ; [info.sunng/ring-jetty9-adapter "0.12.5"]
+                 ; 
+                 ; Otto/tesla
+                 [de.otto/tesla-microservice "0.15.1"]
+                 ;[de.otto/tesla-jetty "0.2.6"
+                 ; :exclusions [org.eclipse.jetty/jetty-server
+                 ;              org.eclipse.jetty/jetty-servlet]]
 
                  ; Notebook Encoding / Exploration
                  [org.pinkgorilla/notebook-encoding] ; notebook encoding
@@ -128,30 +130,22 @@
                  ; [irresponsible/tentacles "0.6.6"] ; github api (needed by encoding and explore)
                  ;[clj-time "0.15.2"] ; needed for notebook exploration ui
                  [com.andrewmcveigh/cljs-time "0.5.2"] ;  notebook exploration ui
-                 
-                 ; Pinkie
-                 [bk/ring-gzip "0.3.0"] ; from oz
-                 [com.taoensso/encore "2.119.0"] ; needed by sente
-                                        ;[com.taoensso/sente "1.13.1"] ; from oz
-                 ;[com.taoensso/sente "1.15.0"] ; already included above
-                 [secretary "1.2.3"]
-                 [aleph "0.4.6"] ; from oz
-                 
+
                  ; CLJ Kernel
                  [nrepl]
                  [org.pinkgorilla/gorilla-middleware]
                  [clj-commons/pomegranate "1.2.0"] ; add-dependency in clj kernel TODO : Replace pomegranate with tools alpha
                  [org.clojure/tools.cli "1.0.194"]
                  ;[clojail "1.0.6"] ; Sandboxing - not sure whether we want to cope with this level of detail
-                 
+
                  ; PINKIE
                  [org.pinkgorilla/gorilla-renderable-ui] ; kernels (clj and cljs) needs renderable (cljs kernel is implemented in notebook)
                  [org.pinkgorilla/gorilla-ui] ; ui renderer impls
-                 
+
                  ; CLJS Kernel
                  ;[org.pinkgorilla/kernel-cljs-shadowdeps
                  ; :exclusions [*/*]] ; add precompiled bundles via jar resources
-                 
+
                  ;; [com.rpl/specter "0.13.2"]
                  ]
 
@@ -362,7 +356,6 @@
                                       ;; [reagent-utils "0.2.0"]
                                       ;[district0x.re-frame/google-analytics-fx "1.0.0"
                                       ; :exclusions [re-frame]]
-                                      [com.andrewmcveigh/cljs-time "0.5.2"]
 
                                       ;; actually dev
                                       [binaryage/dirac "RELEASE"] ;; 0.6.7

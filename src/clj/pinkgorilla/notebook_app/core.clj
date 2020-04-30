@@ -9,7 +9,7 @@
    [pinkgorilla.middleware.render-values]
 
   ;PinkGorilla Notebook
-   [pinkgorilla.kernel.jetty9-ws-relay :as ws-relay]
+   ;[pinkgorilla.kernel.jetty9-ws-relay :as ws-relay]
    [pinkgorilla.route :as route]
    [pinkgorilla.explore.explore-handler :refer [update-excludes explore-directories-start]]
    [pinkgorilla.notebook-app.system :as sys]
@@ -80,7 +80,7 @@
                       :nrepl-port-file (io/file (or (:nrepl-port-file conf) ".nrepl-port"))
                       :server-port     webapp-requested-port
                       ;; TODO bringing the websockets in is a little dirty for now
-                      :jetty-options   {:websockets {"/repl" (ws-relay/ws-processor route/nrepl-handler)}}
+                      ; :jetty-options   {:websockets {"/repl" (ws-relay/ws-processor route/nrepl-handler)}}
                       :ip              ip}
         merged-config (deep-merge default-config
                                   custom-config

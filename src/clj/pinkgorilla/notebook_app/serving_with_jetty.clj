@@ -1,4 +1,4 @@
-(ns pinkgorilla.serving-with-jetty
+(ns pinkgorilla.notebook-app.serving-with-jetty
   (:require
    [clojure.tools.logging :as log]
    [ring.adapter.jetty9 :as jetty-ws]
