@@ -1,8 +1,8 @@
-(ns pinkgorilla.servlet
+(ns pinkgorilla.notebook-app.servlet
   (:require
    [taoensso.timbre :refer [debug info]]
    [ring.util.servlet :as servlet]
-   [pinkgorilla.route :as route])
+   [pinkgorilla.notebook-app.route :as route])
   (:import (javax.servlet ServletConfig)
            (javax.servlet.http HttpServletRequest HttpServletResponse))
   (:gen-class :name pinkgorilla.RingServlet

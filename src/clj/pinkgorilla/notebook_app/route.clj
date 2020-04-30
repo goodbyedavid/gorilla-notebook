@@ -1,4 +1,4 @@
-(ns pinkgorilla.route
+(ns pinkgorilla.notebook-app.route
   "web route handlers
    the actual loading of the routes is handled via tesla.
    tesla gets the handler as a string (namespace/function)

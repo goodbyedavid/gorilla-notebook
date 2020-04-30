@@ -10,10 +10,10 @@
 
   ;PinkGorilla Notebook
    ;[pinkgorilla.kernel.jetty9-ws-relay :as ws-relay]
-   [pinkgorilla.route :as route]
    [pinkgorilla.explore.explore-handler :refer [update-excludes explore-directories-start]]
    [pinkgorilla.notebook-app.system :as sys]
    [pinkgorilla.notebook-app.cli :as cli]
+   [pinkgorilla.notebook-app.route :as route]   
    [pinkgorilla.notebook.secret] ; bring to scope
    [pinkgorilla.notebook.repl] ; bring to scope
    [pinkgorilla.pinkie.core :refer [start-heartbeats!]]
@@ -68,8 +68,8 @@
         nrepl-requested-port (or (:nrepl-port conf) 0)      ;; auto-select port if none requested
         nrepl-host (:nrepl-host conf)
         routes (if nrepl-host
-                 "pinkgorilla.route/remote-repl-handler"
-                 "pinkgorilla.route/default-handler")
+                 "pinkgorilla.notebook-app.route/remote-repl-handler"
+                 "pinkgorilla.notebook-app.route/default-handler")
         default-config (load-edn (io/resource "pink-gorilla.edn"))
         custom-config (if-let [rt-config-file (:runtime-config conf)]
                         (load-edn (io/file rt-config-file))

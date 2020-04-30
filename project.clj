@@ -10,6 +10,66 @@
                                      :password :env/release_password
                                      :sign-releases false}]]
 
+  :main ^:skip-aot pinkgorilla.notebook-app.core
+
+  ;; :aot [gorilla-repl.servlet]
+
+  ;; :jvm-opts ["-Xmx1g"]
+  :java-source-paths ["src/java"]
+  :javac-options ["-target" "1.8" "-source" "1.8"]
+  :source-paths ["src/clj" "env/prod/clj"]
+  :test-paths ["test"]
+  :resource-paths ["resources" "target/cljsbuild" "target/gen-resources"]
+
+  ;; ["resources/public/js/compiled" "target"]
+  :clean-targets ^{:protect false} [:target-path
+                                    [:cljsbuild :builds :app :compiler :output-dir]
+                                    [:cljsbuild :builds :app :compiler :output-to]]
+
+  :minify-assets [[:css {:source "resources/gorilla-repl-client/css"
+                         :target "resources/gorilla-repl-client/gorilla.min.css"}]]
+
+  :prep-tasks ["javac"
+               "compile"
+               "build-tailwind-dev"
+               "build-shadow-without-cljs-kernel"
+               "build-shadow-with-cljs-kernel"]
+
+  :release-tasks [["vcs" "assert-committed"]
+                  ["bump-version" "release"]
+                  ["vcs" "commit" "Release %s"]
+                  ["vcs" "tag" "v" "--no-sign"]
+                  ["deploy"]
+                  ["bump-version"]
+                  ["vcs" "commit" "Begin %s"]
+                  ["vcs" "push"]]
+
+  :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
+                             :macosx  "open"
+                             :linux   "xdg-open"}}}
+
+  ;; :classifiers
+  #_{:standalone :uberjar
+     :python     :python}
+  :env {:production true}
+
+;; :uberjar-name "gorilla-notebook-standalone.jar"
+
+  ;; Those websocket exclusions are ugly but needed since "ring uberwar" does
+  ;; not honor :provided
+  ;; TODO: Not sure if this still applies as of 2019 - however, uberjar uses jetty9 which depends on servlet
+  ;; :uberjar-exclusions [#".*javax/websocket.*" #".*javax/servlet.*"]
+  ;; Cider. Does. Not. Play. With. AOT (cider.nrepl/delayed-handlers empty)
+  :uberjar-exclusions [#"cider/nrepl.*\.class$"]
+
+  ;; :jar-exclusions   [#"(?:^|\/)foo\/" #"(?:^|\/)demo\/" #"(?:^|\/)compiled.*\/" #"html$"]
+
+  :ring {:war-exclusions [#"WEB-INF/lib/javax.websocket-api-1.0.jar"]
+         :handler        pinkgorilla.notebook-app.route/redirect-handler
+         :servlet-class  pinkgorilla.RedirectServlet
+         :servlet-name   redirect-servlet
+         :uberwar-name   "gorilla-notebook.war"}
+
 ;; Use this to check depencencies:
 ;; lein deps :tree    shows if old versions are used (output in beginning)
 ;; lein ancient       shows outdated dependncies (more recent version available on clojars)
@@ -105,21 +165,20 @@
                  ;; [ring.middleware.logger "0.5.0"]
                  ;; [ring-webjars "0.1.1"]  ;; Although not matching servlet3 paths
                  [ring-middleware-format "0.7.4"]
+                 [bk/ring-gzip "0.3.0"] ; from oz
                  ;;  ring-json introduces jackson along with its tail - but so does cljs-ajax :/
                  ;; [ring/ring-json "0.4.0"]
                  [javax.websocket/javax.websocket-api "1.1"]
                  [javax.servlet/javax.servlet-api "4.0.1"]
-                 ;; [org.eclipse.jetty.websocket/websocket-server "9.4.12.v20180830"]
-                 [de.otto/tesla-httpkit "1.0.2"]
-                 [bk/ring-gzip "0.3.0"] ; from oz
-
                  [compojure "1.6.1"] ; Routing
-                 [selmer "1.12.18"]
+                 [selmer "1.12.18"] ; templating
+                  ;; [org.eclipse.jetty.websocket/websocket-server "9.4.12.v20180830"]
                  ;; Bringing it in here bc that is where the websocket "processors" come in
                  ; [info.sunng/ring-jetty9-adapter "0.12.5"]
-                 ; 
+
                  ; Otto/tesla
                  [de.otto/tesla-microservice "0.15.1"]
+                 [de.otto/tesla-httpkit "1.0.2"]
                  ;[de.otto/tesla-jetty "0.2.6"
                  ; :exclusions [org.eclipse.jetty/jetty-server
                  ;              org.eclipse.jetty/jetty-servlet]]
@@ -147,12 +206,11 @@
                  ; :exclusions [*/*]] ; add precompiled bundles via jar resources
 
                  ;; [com.rpl/specter "0.13.2"]
+                  
+                 ;; REPLIKATIV
+                 ;  [io.replikativ/replikativ "0.2.4"]
+                 ;  [com.cognitect/transit-cljs "0.8.239" :scope "provided"]
                  ]
-
-
-  ;; REPLIKATIV
-  ;  [io.replikativ/replikativ "0.2.4"]
-  ;  [com.cognitect/transit-cljs "0.8.239" :scope "provided"]
 
   :plugins [[lein-shell "0.5.0"]
             [lein-environ "1.1.0"] ;; TODO Will likely be axed soon
@@ -166,91 +224,6 @@
             [lein-asset-minifier "0.4.6"
              :exclusions [org.clojure/clojure]]
             [min-java-version "0.1.0"]]
-
-  ;; :uberjar-name "gorilla-notebook-standalone.jar"
-
-  ;; Those websocket exclusions are ugly but needed since "ring uberwar" does
-  ;; not honor :provided
-  ;; TODO: Not sure if this still applies as of 2019 - however, uberjar uses jetty9 which depends on servlet
-  ;; :uberjar-exclusions [#".*javax/websocket.*" #".*javax/servlet.*"]
-  ;; Cider. Does. Not. Play. With. AOT (cider.nrepl/delayed-handlers empty)
-  :uberjar-exclusions [#"cider/nrepl.*\.class$"]
-
-  ;; :jar-exclusions   [#"(?:^|\/)foo\/" #"(?:^|\/)demo\/" #"(?:^|\/)compiled.*\/" #"html$"]
-
-  :ring {:war-exclusions [#"WEB-INF/lib/javax.websocket-api-1.0.jar"]
-         :handler        pinkgorilla.route/redirect-handler
-         :servlet-class  pinkgorilla.RedirectServlet
-         :servlet-name   redirect-servlet
-         :uberwar-name   "gorilla-notebook.war"}
-
-  :main ^:skip-aot pinkgorilla.notebook-app.core
-
-  ;; :aot [gorilla-repl.servlet]
-
-  ;; :jvm-opts ["-Xmx1g"]
-  :java-source-paths ["src/java"]
-  :javac-options ["-target" "1.8" "-source" "1.8"]
-  :source-paths ["src/clj" "env/prod/clj"]
-  :test-paths ["test"]
-  :resource-paths ["resources" "target/cljsbuild" "target/gen-resources"]
-
-  ;; ["resources/public/js/compiled" "target"]
-  :clean-targets ^{:protect false} [:target-path
-                                    [:cljsbuild :builds :app :compiler :output-dir]
-                                    [:cljsbuild :builds :app :compiler :output-to]]
-
-  :minify-assets [[:css {:source "resources/gorilla-repl-client/css"
-                         :target "resources/gorilla-repl-client/gorilla.min.css"}]]
-
-  :prep-tasks ["javac"
-               "compile"
-               "build-tailwind-dev"
-               "build-shadow-without-cljs-kernel"
-               "build-shadow-with-cljs-kernel"
-               ;; "build-shadow-pinkie"
-               ]
-
-  :release-tasks [["vcs" "assert-committed"]
-                  ["bump-version" "release"]
-                  ["vcs" "commit" "Release %s"]
-                  ["vcs" "tag" "v" "--no-sign"]
-                  ["deploy"]
-                  ["bump-version"]
-                  ["vcs" "commit" "Begin %s"]
-                  ["vcs" "push"]]
-
-  ;; :classifiers
-  #_{:standalone :uberjar
-     :python     :python}
-  :env {:production true}
-
-  ;; We might chose to leverage the shell escape hatch to get out of dependency hell
-  :aliases {"build-tailwind-dev"               ^{:doc "Build tailwind development."}
-            ["shell" "npm" "run" "tailwind-development"]
-            "build-shadow-ci"                  ^{:doc "Build shadow-cljs ci"}
-            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "compile" ":ci"]
-            "build-shadow-with-cljs-kernel"    ^{:doc "Build shadow-cljs with cljs kernel"}
-            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "compile" ":app-with-cljs-kernel"]
-            "build-shadow-without-cljs-kernel" ^{:doc "Build shadow-cljs without cljs kernel"}
-            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "release" ":app-without-cljs-kernel"]
-            "build-browser-test"               ^{:doc "Shadow-cljs browser test"}
-            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "compile" ":browser-test"]
-            "watch-cards"                      ^{:doc "Shadow-cljs watch cards"}
-            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "watch" ":cards"]
-            "test-js"                          ^{:doc "Test compiled JavaScript."}
-            ["shell" "npm" "run" "test"]
-            "clj-kondo"                        ^{:doc "Lint with clj-kondo"}
-            ["run" "-m" "clj-kondo.main"]
-            "lint"                             ^{:doc "Lint for dummies"}
-            ["clj-kondo" "--lint" "src/clj/pinkgorilla"]
-            "coverage"                         ^{:doc "Code coverage for dummies"}
-            ["with-profile" "+cljs" "cloverage"]
-            "bump-version"                     ^{:doc "Roll versions artefact version"}
-            ["change" "version" "leiningen.release/bump-version"]
-            "test-js-compile"                  ^{:doc "compile and Test JavaScript."}
-            ["do" ["build-shadow-ci"] "test-js"]}
-
 
   :profiles {:devcljs {:source-paths   ^:replace ["src/clj" "env/dev/clj"]
                        :resource-paths ^:replace ["resources"
@@ -292,7 +265,7 @@
                                         [ring/ring-devel "1.7.1"]
                                         [prone "2019-07-08"]
                                         [pjstadig/humane-test-output "0.10.0"]
-                                        [instaparse "1.4.10"]
+                                        ;[instaparse "1.4.10"] ; dep of pinkgorilla-encoding
                                         [me.lomin/component-restart "0.1.2"]]
 
                        :source-paths   ^:replace ["src/clj" "test" "env/dev/clj"]
@@ -315,25 +288,25 @@
                                        ;             org.clojure/google-closure-library-third-party]
                                        ]
 
+                                      [thheller/shadow-cljs]
+                                      [thheller/shadow-cljsjs "0.0.21"]
 
-                                      [thheller/shadow-cljs
-                                       ; :exclusions [hawk]
-                                       ]
                                       ; cljs-ajax requires [com.cognitect/transit-cljxxx]
                                       ; awb99: if ajax is not here then chord will  require an older version and build will break
                                       [cljs-ajax "0.8.0"]   ; needed by reagent http-fx ??
                                       [prismatic/dommy "1.1.0"]
                                       [com.cemerick/url "0.1.1"]
-
+                                      [secretary "1.2.3"]   ; client side routing - TODO: Should likely be replaced by jux/bidi
+                                      ;; [bidi "2.1.6"]
+                                      
                                       ;; CLJS KERNEL
                                       [org.pinkgorilla/kernel-cljs-shadow]
-                                      [thheller/shadow-cljsjs "0.0.21"]
+
 
                                       ;; [cljs-tooling "0.2.0"]
                                       ;; https://github.com/bhauman/lein-figwheel/issues/612
                                       ;; [javax.xml.bind/jaxb-api "2.4.0-b180830.0359" :scope "provided"]
-                                      [secretary "1.2.3"]   ; client side routing - TODO: Should likely be replaced by jux/bidi
-                                      ;; [bidi "2.1.6"]
+
 
                                       [com.lucasbradstreet/cljs-uuid-utils "1.0.2"] ;; awb99: in encoding, and clj/cljs proof
 
@@ -376,6 +349,29 @@
                        :aot         :all
                        :omit-source true
                        :classifier  "standalone"}}
-  :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
-                             :macosx  "open"
-                             :linux   "xdg-open"}}})
+
+  ;; We might chose to leverage the shell escape hatch to get out of dependency hell
+  :aliases {"build-tailwind-dev"               ^{:doc "Build tailwind development."}
+            ["shell" "npm" "run" "tailwind-development"]
+            "build-shadow-ci"                  ^{:doc "Build shadow-cljs ci"}
+            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "compile" ":ci"]
+            "build-shadow-with-cljs-kernel"    ^{:doc "Build shadow-cljs with cljs kernel"}
+            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "compile" ":app-with-cljs-kernel"]
+            "build-shadow-without-cljs-kernel" ^{:doc "Build shadow-cljs without cljs kernel"}
+            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "release" ":app-without-cljs-kernel"]
+            "build-browser-test"               ^{:doc "Shadow-cljs browser test"}
+            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "compile" ":browser-test"]
+            "watch-cards"                      ^{:doc "Shadow-cljs watch cards"}
+            ["with-profile" "+cljs" "run" "-m" "shadow.cljs.devtools.cli" "watch" ":cards"]
+            "test-js"                          ^{:doc "Test compiled JavaScript."}
+            ["shell" "npm" "run" "test"]
+            "clj-kondo"                        ^{:doc "Lint with clj-kondo"}
+            ["run" "-m" "clj-kondo.main"]
+            "lint"                             ^{:doc "Lint for dummies"}
+            ["clj-kondo" "--lint" "src/clj/pinkgorilla"]
+            "coverage"                         ^{:doc "Code coverage for dummies"}
+            ["with-profile" "+cljs" "cloverage"]
+            "bump-version"                     ^{:doc "Roll versions artefact version"}
+            ["change" "version" "leiningen.release/bump-version"]
+            "test-js-compile"                  ^{:doc "compile and Test JavaScript."}
+            ["do" ["build-shadow-ci"] "test-js"]})

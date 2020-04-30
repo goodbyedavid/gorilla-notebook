@@ -4,7 +4,7 @@
    ;; [ring.middleware.defaults :refer [api-defaults wrap-defaults]]
    [prone.middleware :refer [wrap-exceptions]]
    [ring.middleware.reload :refer [wrap-reload]]
-   [pinkgorilla.route :refer [default-routes]]))
+   [pinkgorilla.notebook-app.route :refer [default-routes]]))
 
 (defn wrap-dev [handler]
   (-> handler
