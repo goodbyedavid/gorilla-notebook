@@ -9,13 +9,15 @@
    [compojure.core :as compojure :refer [defroutes routes context GET POST]]
    [compojure.route :refer [files resources not-found] :as compojure-route]
    [selmer.parser :as sel]
+   [ring.middleware.cors :refer [wrap-cors]]
    [ring.middleware.gzip :refer [wrap-gzip]]
    [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.session :refer [wrap-session]]
    ;;PinkGorilla Libraries
-   [pinkgorilla.middleware.cider :as mw-cider]
+   [pinkgorilla.middleware.cider :refer [cider-handler]]
    [pinkgorilla.ui.hiccup_renderer :as renderer]   ; this is needed to bring the render implementations into scope
    ;;Pinkorilla Notebook   
+   [pinkgorilla.kernel.httpkit-ws-relay :refer [ws-handler]]
    [pinkgorilla.pinkie.core :refer [pinkie-routes]]
    [pinkgorilla.notebook-app.wrap :refer [wrap-api-handler wrap-cors-handler redirect-app config get-war-prefix]]
    [pinkgorilla.storage.storage-handler :refer [save-notebook load-notebook]]
@@ -50,6 +52,10 @@
   (files "/project-files" {:root "."})
   (not-found "Bummer, not found"))
 
+
+(defroutes routes-ws
+  (GET "/repl" [] ws-handler))
+
 ;; DEFAULT HANDLER
 
 (defroutes default-routes
@@ -65,6 +71,8 @@
       ;(ring.middleware.params/wrap-params)
       ;(wrap-cljsjs)
       (wrap-gzip))
+  (-> routes-ws
+      (wrap-cors :access-control-allow-origin #".+"))
   resource-handlers)
 
 (def default-handler
@@ -76,7 +84,8 @@
     [prefix receive-fn]
     [(GET (str prefix "repl") [] (ws-relay/jetty-repl-ring-handler receive-fn))])
 
-(def nrepl-handler (atom (mw-cider/cider-handler) #_(cljs/cljs-handler)))
+(def nrepl-handler
+  (atom (cider-handler)))
 
 #_(def default-repl-handlers (create-repl-handlers "/" (partial ws-relay/on-receive-mem nrepl-handler)))
 #_(def remote-repl-handlers (create-repl-handlers "/" ws-relay/on-receive-net))

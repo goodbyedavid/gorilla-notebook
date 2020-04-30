@@ -14,7 +14,10 @@
    [taoensso.encore :as encore :refer (have have?)]
    [taoensso.timbre :as log :refer (tracef debugf infof warnf errorf)]
    [taoensso.sente  :as sente]
-   [taoensso.sente.server-adapters.aleph :refer (get-sch-adapter)]
+   ;[taoensso.sente.server-adapters.aleph :refer (get-sch-adapter)]
+   [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
+   
+   
    [taoensso.sente.packers.transit :as sente-transit]
 
    [cheshire.core :as json]))
@@ -142,7 +145,7 @@
                             :i i}]))))]
 
     (go-loop [i 0]
-      (<! (async/timeout 10000))
+      (<! (async/timeout 20000))
       (when @broadcast-enabled?_ (broadcast! i))
       (recur (inc i)))))
 

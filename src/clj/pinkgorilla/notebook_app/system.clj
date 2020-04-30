@@ -4,7 +4,9 @@
    [de.otto.tesla.system :as otto-system]
    [pinkgorilla.notebook-app.dispatcher :refer [new-dispatcher]]
    [pinkgorilla.kernel.nrepl :as nrepl :refer [new-cider-repl-server]]
-   [pinkgorilla.serving-with-jetty :as jetty :refer [add-jetty-server]])
+   ;[pinkgorilla.serving-with-jetty :as jetty :refer [add-jetty-server]]
+   [pinkgorilla.notebook-app.serving-with-httpkit :as jetty :refer [add-jetty-server]]
+   )
   (:gen-class))
 
 (def system (atom nil))

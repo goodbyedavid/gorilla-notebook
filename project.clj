@@ -88,8 +88,9 @@
                  [com.stuartsierra/component "0.4.0"]
                  [org.danielsz/system "0.4.3"
                   :exclusions [io.aviso/pretty]] ; newer version in com.taoensso/timbre
-                 [de.otto/tesla-microservice "0.13.1"]
-
+                 ;[de.otto/tesla-microservice "0.13.1"]
+                 [de.otto/tesla-microservice "0.15.1"]
+                 
                  ;; ENCODING / SERIALIZATION
                  [com.taoensso/sente "1.15.0"]
                  ;; Chord needed for clojure?
@@ -111,10 +112,11 @@
                  [javax.websocket/javax.websocket-api "1.1"]
                  [javax.servlet/javax.servlet-api "4.0.1"]
                  ;; [org.eclipse.jetty.websocket/websocket-server "9.4.12.v20180830"]
-                 [de.otto/tesla-jetty "0.2.6"
-                  :exclusions [org.eclipse.jetty/jetty-server
-                               org.eclipse.jetty/jetty-servlet]]
-                 ;; [de.otto/tesla-httpkit "1.0.1"]
+                 ;[de.otto/tesla-jetty "0.2.6"
+                 ; :exclusions [org.eclipse.jetty/jetty-server
+                 ;              org.eclipse.jetty/jetty-servlet]]
+                 [de.otto/tesla-httpkit "1.0.2"]
+                 
                  [compojure "1.6.1"] ; Routing
                  [selmer "1.12.18"]
                  ;; Bringing it in here bc that is where the websocket "processors" come in

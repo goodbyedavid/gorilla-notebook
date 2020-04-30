@@ -10,9 +10,6 @@
 ;(timbre/set-level! :info)
 (enable-console-print!)
 
-(defn- log [a-thing]
-  (.log js/console a-thing))
-
 ;; CSRF check
 
 (def ?csrf-token

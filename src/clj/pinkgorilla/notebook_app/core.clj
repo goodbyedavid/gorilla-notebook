@@ -101,7 +101,8 @@
 
     (let [s (sys/start merged-config)
           server (-> s (get-in [:server :jetty]))
-          webapp-port (-> server .getConnectors (get 0) .getLocalPort)
+          webapp-port 9000
+          ;; webapp-port (-> server .getConnectors (get 0) .getLocalPort)
           ;; webapp-port (-> s (get-in [:server :httpkit]) .getPort)
           ]
       (spit (doto gorilla-port-file .deleteOnExit) webapp-port)

@@ -11,8 +11,9 @@
   (:require-macros
    [cljs.core.async.macros :as asyncm :refer (go go-loop)]))
 
+(defn- log [a-thing]
+  (.log js/console a-thing))
 
-;; stolen from metasouarous oz.
 
 (debugf "connecting sente websocket..")
 
@@ -64,8 +65,8 @@
   [{:as ev-msg :keys [?data]}]
   (let [[id msg] ?data]
     (case id
-      ;:oz.core/view-spec (swap! app-state assoc :view-spec msg)
-      :pinkie/heartbeat (debugf "Pinkie Heartbeat: %s" msg)
+      :pinkie/heartbeat (log (str "Pinkie Heartbeat: " msg))
+      ;:pinkie/heartbeat (debugf "Pinkie Heartbeat: %s" msg)
       :pinkie/code-add (dispatch [:notebook-add-code msg])
       :pinkie/result-set (dispatch [:notebook-set-result msg])
       (debugf "Pinkie Unhandled server event: %s" ?data))))
