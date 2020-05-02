@@ -1,5 +1,6 @@
 (ns pinkgorilla.events.auth2
   (:require
+   [taoensso.timbre :refer-macros (info)]
    [re-frame.core :refer [reg-event-fx dispatch]]))
 
 (defn clear-error [state]
@@ -17,11 +18,12 @@
  (fn [{db :db} [_ provider]]
    (js/window.addEventListener "message" message-event-handler)
    (case provider
-     :github
-     (.open js/window
-            "/gateway/oauth/github/auth"
-            "GitHub OAuth"
-            "width=300,height=400"))
+     :github (do (info "github oauth..")
+                 (.open js/window
+                        "/gateway/oauth/github/auth"
+                        "GitHub OAuth"
+                        "width=300,height=400"))
+     (info "cannot eval - unknown kernel!"))
    {:db (-> db
             clear-error
             (assoc-in [:user-auth :oauth-provider] provider))}))

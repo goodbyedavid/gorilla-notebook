@@ -60,13 +60,16 @@
   []
   (aset (js/document.querySelector "body") "scrollTop" 0))
 
-(defn slugify
+; remainder of old explorer
+
+#_(defn slugify
   [txt]
   (-> txt
       s/lower-case
       (s/replace #"[^a-zA-Z0-9]" "-")))
 
-(defn slug
+
+#_(defn slug
   [listing]
   (str "/projects/" (:db/id listing) "/" (slugify (str (:project/name listing)))))
 

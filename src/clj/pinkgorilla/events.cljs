@@ -15,6 +15,8 @@
    [pinkgorilla.events.notifications]
    [pinkgorilla.events.palette]
    [pinkgorilla.events.views] ; main component in the browser / navbar
+   [pinkgorilla.events.auth]  
+   [pinkgorilla.events.domain] 
    [pinkgorilla.events.auth2]
 
    [pinkgorilla.events.settings]
@@ -28,7 +30,7 @@
    [pinkgorilla.events.kernel-docstring]
 
    ; pinkgorilla ui
-
+   
    [pinkgorilla.explore.subscriptions]
    [pinkgorilla.explore.events]))
 

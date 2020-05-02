@@ -2,7 +2,6 @@
   (:require
    [pinkgorilla.output.html :refer [output-html]]
    [pinkgorilla.output.list-like :refer [output-list-like]]
-   [pinkgorilla.output.jsscript :refer [output-jsscript]]
    [pinkgorilla.output.reagent :refer [output-reagent]]))
 
 ;; 2019 10 16 awb:
@@ -20,5 +19,4 @@
     :html output-html ; todo: create html component in gorilla-renderable-ui and remove :html
     :list-like (partial output-list-like output-fn)
     :reagent output-reagent
-    :jsscript output-jsscript ; todo: remove this
     output-unknown))

@@ -111,10 +111,10 @@
 
                          ; pinkgorilla (enforce to use latest version of all projects)
                          [org.pinkgorilla/gorilla-renderable "3.0.7"]
-                         [org.pinkgorilla/gorilla-middleware "0.2.22"]
-                         [org.pinkgorilla/gorilla-renderable-ui "0.1.32"]
-                         [org.pinkgorilla/gorilla-ui "0.1.27"]
-                         [org.pinkgorilla/notebook-encoding "0.0.29"]
+                         [org.pinkgorilla/gorilla-middleware "0.2.23"]
+                         [org.pinkgorilla/gorilla-renderable-ui "0.1.33"]
+                         [org.pinkgorilla/gorilla-ui "0.1.28"]
+                         [org.pinkgorilla/notebook-encoding "0.0.31"]
                          [org.pinkgorilla/gorilla-explore "0.1.20"]
                          [org.pinkgorilla/kernel-cljs-shadowdeps "0.0.12"]
                          [org.pinkgorilla/kernel-cljs-shadow "0.0.25"]

@@ -1,5 +1,5 @@
 {
-  "//": "hint: npm-check-updates is the new lein ancient",
+  "//": "hint: npm outdated is the new lein ancient",
   "name": "gorilla-notebook-devtooling",
   "version": "0.37.0",
   "author": "a.steffan@contentreich.de",
@@ -13,13 +13,15 @@
     "_release": "shadow-cljs release app"
   },
   "dependencies": {
-    "ag-grid-community": "^22.0.0",
-    "ag-grid-react": "^22.0.0",
+    "ag-grid-community": "22.1.1",
+    "ag-grid-react": "22.1.1",
     "codemirror": "^5.49.2",
     "create-react-class": "^15.6.3",
-    "highlight.js": "9.15.10",
-    "leaflet": "^1.6.0",
+    "highcharts": "8.0.4",
+    "highlight.js": "9.18.1",
+    "leaflet": "1.6.0",
     "marked": "^0.7.0",
+    "mathjax": "3.0.5",
     "mousetrap": "^1.6.3",
     "mousetrap-global-bind": "^1.1.0",
     "parinfer": "^3.12.0",
@@ -32,10 +34,13 @@
     "react-icons": "2.2.7",
     "react-leaflet": "^2.6.0",
     "react-markdown-editor-lite": "^1.0.2",
-    "react-player": "^1.14.2",
-    "react-sparklines": "^1.7.0",
+    "react-player": "1.15.3",
+    "react-sparklines": "1.7.0",
     "reakit": "0.11.2",
-    "tailwindcss": "^1.1.4"
+    "tailwindcss": "^1.1.4",
+    "vega": "5.11.1",
+    "vega-embed": "6.7.0",
+    "vega-lite": "4.11.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.12.0",
