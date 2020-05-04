@@ -14,11 +14,8 @@
    [taoensso.encore :as encore :refer (have have?)]
    [taoensso.timbre :as log :refer (tracef debugf infof warnf errorf)]
    [taoensso.sente  :as sente]
-   [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
-   
-   
+   [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)] 
    [taoensso.sente.packers.transit :as sente-transit]
-
    [cheshire.core :as json]))
 
 (defn unique-id
@@ -34,8 +31,8 @@
 
 ;(log/set-level! :info)
 ;; (log/set-level! :debug)
-(taoensso.timbre/set-level! :trace) ; Uncomment for more logging
-
+;(taoensso.timbre/set-level! :trace) ; Uncomment for more logging
+(taoensso.timbre/set-level! :debug)
 
 (reset! sente/debug-mode?_ true) ; Uncomment for extra debug info
 

@@ -3,6 +3,7 @@
   (:require
    [taoensso.timbre :refer-macros (info)]
    [cljs.reader :as rd]
+
    [reagent.core :as r]
    [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
    [pinkgorilla.components.localstorage :refer [ls-get ls-set!]]
@@ -77,11 +78,10 @@
 (reg-event-fx
  :set-clj-secrets
  (fn [{:keys [db]}]
-   (let [secret-result (r/atom {})
-         secrets (get-in db [:settings :secrets])
+   (let [secrets (get-in db [:settings :secrets])
          secrets (if (nil? secrets) {} secrets)]
      (info "setting clj repl secrets..")
-     (clj secret-result "pinkgorilla.notebook.secret/set-secrets!" secrets)
+     (clj "pinkgorilla.notebook.secret/set-secrets!" secrets)
      {})))
 
 (reg-event-db

@@ -4,11 +4,13 @@
   "
   (:require
    [clojure.string :as str]
+   [goog.string :as gstring]
    [re-frame.core :refer [subscribe]]
    ;[taoensso.timbre :refer-macros (info)]
    [shadow.cljs.bootstrap.env]
    [pinkgorilla.ui.gorilla-renderable :refer [Renderable render]]
-   [pinkgorilla.ui.pinkie]))
+   [pinkgorilla.ui.pinkie]
+   [pinkgorilla.kernel.nrepl :refer [clj-eval-cb]]))
 
 
 ; make register-tag available in the repl namespace
@@ -43,3 +45,21 @@
 
 (defn secret [k]
   (k (secrets)))
+
+(defn r-doc [s]
+  (clj-eval-cb (gstring/format "(clojisr.v1.gorilla.repl/r-doc %s)" s)
+               (fn [data]
+                 (let [{:keys [value error]} data]
+                   (if error
+                     (println "r docstring error: " error)
+                     (println "r docstring" value))))))
+
+
+
+(comment
+
+  (r-doc "cor")
+
+
+  ;
+  )
