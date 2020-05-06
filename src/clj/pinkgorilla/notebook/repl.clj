@@ -6,16 +6,13 @@
    [clojure.java.io :as io])
   (:import (java.io PushbackReader)))
 
-; shamelessly stolen from: https://github.com/clojupyter/clojupyter/blob/40c6d47ec9c9e4634c8e28fca3209b5c3ac8430c/src/clojupyter/misc/helper.clj
-
-; this code will have to stay in the core pink-gorilla repo.
-; but dependency management can be moved to add-lib
-; add-dependencies   
-
 (defn add-dependencies
   "Use Pomegranate to add dependencies 
    with Maven Central and Clojars as default repositories.
-   Same Syntax as clojupyter"
+   Same Syntax as clojupyter
+   stolen from: https://github.com/clojupyter/clojupyter/blob/40c6d47ec9c9e4634c8e28fca3209b5c3ac8430c/src/clojupyter/misc/helper.clj
+
+   "
   [dependencies & {:keys [repositories]
                    :or {repositories {"central" "https://repo1.maven.org/maven2/"
                                       "clojars" "https://clojars.org/repo"}}}]
@@ -50,7 +47,10 @@
 
 (defn info []
   {:java (-> (System/getProperties) (get "java.version"))
-   :clojure (clojure-version)})
+   :clojure (clojure-version)
+   :notebook (System/getProperty "projectname.version") })
+
+
 
 (defonce secrets-atom (atom {}))
 

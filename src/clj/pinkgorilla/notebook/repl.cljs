@@ -54,8 +54,6 @@
                      (println "r docstring error: " error)
                      (println "r docstring" value))))))
 
-
-
 (comment
 
   (r-doc "cor")

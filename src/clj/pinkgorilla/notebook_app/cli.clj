@@ -4,10 +4,8 @@
    [clojure.tools.cli :as cli]
    [clojure.string :as string]))
 
-;; Shamelessly stolen from
-;; https://github.com/gorillalabs/gorilla-repl/blob/develop/src/gorilla_repl/cli.clj
-
-(def cli-options                                            ;; see https://github.com/clojure/tools.cli#example-usage
+(def cli-options   
+  ;; see https://github.com/clojure/tools.cli#example-usage
   [["-p" "--nrepl-port PORT" "Port number of the nrepl server."
     :default nil
     :parse-fn #(Integer/parseInt %)
@@ -27,6 +25,7 @@
    ["-H" "--ip IP" "IP of the GorillaNotebook web server."
     :default "localhost"
     :default-desc "localhost"]
+   
    ["-c" "--runtime-config runtime-config" "Runtime config edn file"
     :default nil]
 
@@ -61,5 +60,8 @@
 
 (comment
 
-  (let [args []]
-    (parse-opts args)))
+  (let [args ["-C" "CONFIG.EDN"]]
+    (parse-opts args))
+  
+  ;
+  )
