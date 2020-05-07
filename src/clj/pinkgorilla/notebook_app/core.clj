@@ -107,7 +107,7 @@
           ]
       (spit (doto gorilla-port-file .deleteOnExit) webapp-port)
       (explore-directories-start)
-      (start-heartbeats!)
+      #_(start-heartbeats!)
       (info (str "Running at http://" ip ":" webapp-port "/worksheet.html ."))
       s)))
 

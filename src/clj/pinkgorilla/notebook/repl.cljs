@@ -47,12 +47,13 @@
   (k (secrets)))
 
 (defn r-doc [s]
-  (clj-eval-cb (gstring/format "(clojisr.v1.gorilla.repl/r-doc %s)" s)
-               (fn [data]
-                 (let [{:keys [value error]} data]
-                   (if error
-                     (println "r docstring error: " error)
-                     (println "r docstring" value))))))
+  (clj-eval-cb
+   (gstring/format "(clojisr.v1.gorilla.repl/r-doc %s)" s)
+   (fn [data]
+     (let [{:keys [value error]} data]
+       (if error
+         (println "r docstring error: " error)
+         (println "r docstring" value))))))
 
 (comment
 

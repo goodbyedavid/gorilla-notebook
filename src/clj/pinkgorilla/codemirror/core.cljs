@@ -115,6 +115,8 @@
         cm (when cm-el (.-CodeMirror cm-el))]
     cm))
 
+;; Docstrings / auto complete
+
 (defn do-completions
   "@param {CodeMirror} cm"
   [cur start end callback ns compl]
@@ -142,7 +144,7 @@
 
 (defn completer
   "@param {CodeMirror} cm"
-  [ns cm callback _]                    ;; options
+  [ns cm callback _] ;; options
   (let [cur (.getCursor cm)
         token (.getTokenAt cm cur)
         word (.-string token)
@@ -160,13 +162,13 @@
 (defn complete
   [segment-id ns]
   (let [dom-id (name segment-id)
-        cm (-> (gdom/getElement dom-id) el-editor)]         ;; TODO Test bummer
+        cm (-> (gdom/getElement dom-id) el-editor)]
     (.showHint js/CodeMirror cm (partial completer ns) #js {:async true :completeSingle false :alignWithWord false})))
 
 (defn get-token-at-cursor
   [segment-id]
   (let [dom-id (name segment-id)
-        cm (-> (gdom/getElement dom-id) el-editor)]         ;; TODO Test bummer
+        cm (-> (gdom/getElement dom-id) el-editor)]
     ;; var token = self.codeMirror.getTokenAt(self.codeMirror.getCursor());
     ;; if (token != null) return token.string;
     (.-string (->> (.getCursor cm)

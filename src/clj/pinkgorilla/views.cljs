@@ -1,11 +1,8 @@
 (ns pinkgorilla.views
   (:require
-   [clojure.string :as str]
    [reagent.core :as reagent]
    [reagent.dom]
    [re-frame.core :as rf :refer [subscribe dispatch]]
-   [goog.dom :as gdom]
-   [dommy.core :as dom]
    [pinkgorilla.components.markdown]
    [pinkgorilla.subs :as s]
    [pinkgorilla.dialog.save :refer [save-dialog]]
@@ -14,6 +11,7 @@
    [pinkgorilla.dialog.meta :refer [meta-dialog]]
    [pinkgorilla.worksheet.core :refer [worksheet]]
    [pinkgorilla.storage.core]
+   [pinkgorilla.codemirror.docstring :refer [doc-viewer]]
    [pinkgorilla.views.navbar :refer [navbar-component]]
    [pinkgorilla.dialog.notifications :refer [notifications-container-component message-container]]
    [pinkgorilla.explore.core :refer [notebook-explorer]]
@@ -26,31 +24,6 @@
   [:div.menu-icon {:on-click                #(dispatch [:app:commands])
                    :dangerouslySetInnerHTML {:__html "&#9776;"}}])
 
-(defn doc-viewer
-  []
-  (let [docs (subscribe [:docs])]
-    (reagent/create-class
-     {;; :component-did-mount  (fn [this])
-      :display-name         "doc-viewer"                   ;; for more helpful warnings & errors
-       ;; :component-will-unmount (fn [this])
-      :component-did-update (fn [this _] ; old_argv
-                               ;; TODO Ugly, but a bit more tricky to get right in reagent-render/render
-                              (if-let [hint-el (gdom/getElementByClass "CodeMirror-hints")]
-                                (let [rect (.getBoundingClientRect hint-el)
-                                      el (reagent.dom/dom-node this)
-                                      top (.-top rect)
-                                      right (.-right rect)]
-                                  (dom/set-px! el :top top :left right)
-                                   ;;
-                                   ;; (set! (.-top el-style) top)
-                                   ;; (set! (.-left el-style) right)
-                                  )))
-      :reagent-render
-      (fn []
-        [:div.DocViewer.doc-viewer {:style (if (str/blank? (:content @docs))
-                                             {:display "none"} {})}
-         [:div.DocViewer.doc-viewer-content {}
-          [:div {:dangerouslySetInnerHTML {:__html (:content @docs)}}]]])})))
 
 (defn gorilla-app-doc
   []
