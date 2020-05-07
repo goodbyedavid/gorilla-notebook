@@ -72,7 +72,9 @@
                  "pinkgorilla.notebook-app.route/default-handler")
         default-config (load-edn (io/resource "pink-gorilla.edn"))
         custom-config (if-let [rt-config-file (:runtime-config conf)]
-                        (load-edn (io/file rt-config-file))
+                        (if (string? rt-config-file) ; runtime-config can be either 
+                            (load-edn (io/file rt-config-file)) ; a string (filename)
+                            rt-config-file) ; or a clojure datastructure
                         {})
         other-config {:routes          routes
                       :nrepl-port      nrepl-requested-port
