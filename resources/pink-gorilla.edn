@@ -4,7 +4,11 @@
  :health-url    "/health"
  ;; TODO: The following ends up (get-in @db [:config]). CANNOT be nested in settings bc the latter is backed by local-storage
  :settings
- {; TODO ClojureScript kernel settings may interfere with the build chosen
+ {:python
+  {:python-executable "~/.conda/envs/pyclj/bin/python3.7"
+   :library-path "~/.conda/envs/pyclj/lib/libpython3.7m.dylib"}
+
+  ; TODO ClojureScript kernel settings may interfere with the build chosen
   :cljs
   {:kernel {;; :path         "http://localhost:2705/bundles/gorilla" ; base url of dependency server / bundle that gets loaded
             :path  "/bundles/gorilla" ; base url of dependency server / bundle that gets loaded

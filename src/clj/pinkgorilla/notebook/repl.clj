@@ -3,7 +3,9 @@
    it should be easy to find this functions, so they in one namespace."
   (:require
    [cemerick.pomegranate :as pg]
-   [clojure.java.io :as io])
+   [clojure.java.io :as io]
+   [pinkgorilla.notebook-app.system]
+   )
   (:import (java.io PushbackReader)))
 
 (defn add-dependencies
@@ -51,6 +53,9 @@
    :notebook (System/getProperty "projectname.version") })
 
 
+
+(defn get-setting [path]
+   (pinkgorilla.notebook-app.system/get-setting path))
 
 (defonce secrets-atom (atom {}))
 
