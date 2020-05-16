@@ -11,7 +11,7 @@
    [cljs.core.async :as async :refer (<! >! put! chan timeout close!)]
    [taoensso.timbre :refer-macros (info warn)]
    [cljs-uuid-utils.core :as uuid]
-   [reagent.core]
+   [reagent.core :as r]
    [re-frame.core :refer [dispatch]]
    ;; [system.components.sente :refer [new-channel-socket-client]]
    ;; [taoensso.sente :as sente :refer (cb-success?)]
@@ -331,7 +331,8 @@
       :error (swap! result assoc :error data)
       :done (do
               (info "clj-eval finished!")
-              (put! channel :data)))))
+              (if-not (nil? data)
+                (put! channel data))))))
 
 (defn ^:export clj-eval!
   "evaluates a clj-snippet"
@@ -412,12 +413,19 @@
     (go (_ (<! channel))
         (reset! result-atom @result))))
 
+(defn clj-eval-ignore-result [function-as-string & params]
+  (let [result-atom (r/atom {})]
+    (if params
+      (apply (partial clj result-atom function-as-string)  params)
+      (clj result-atom function-as-string))))
+
+
 (comment
 
   (eval! 15 "(+ 5 5)")
 
   (get-completion-doc 'print-table 'clojure.pprint #(println "docs: " %1))
 
-  
+
   ;
   )

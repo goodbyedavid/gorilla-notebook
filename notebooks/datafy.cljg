@@ -1,0 +1,82 @@
+;; gorilla-repl.fileformat = 2
+
+;; @@ [meta]
+{}
+
+;; @@
+
+;; **
+;;; # Python datafy 
+;; **
+
+;; @@ [clj]
+(use '[pinkgorilla.notebook.repl]) 
+(pinkgorilla.notebook.repl/add-dependencies 
+ '[[clj-python/libpython-clj "1.40"]
+  [org.pinkgorilla/python-gorilla "0.0.10" :exclusions [org.pinkgorilla/gorilla-notebook]]  ; not needed if used as a library
+   ])
+;; @@
+
+;; @@ [clj]
+(ns gigasquid.numpy-plot
+  (:require [libpython-clj.require :refer [require-python]]
+            [libpython-clj.python :as py :refer [py. py.. py.-]]
+            [libpython-clj.metadata :refer [ datafy-module  nav-module ]]
+            [pinkgorilla.python.core :refer [py-initialize!]]
+            [pinkgorilla.python.plot :refer [with-show]]))
+;; @@
+
+;; @@ [clj]
+(require-python '[matplotlib.pyplot :as pyplot])
+(require-python '[numpy :as numpy])
+;;;; you will need matplotlib, numpy, and pillow installed to run this in python3
+;; @@
+
+;; @@ [clj]
+(def x (numpy/linspace 0 2 50))
+x
+;; @@
+
+;; @@ [clj]
+(with-show (matplotlib.pyplot/plot [[1 2 3 4 5] [1 2 3 4 10]] :label "linear"))
+;; @@
+
+;; @@ [clj]
+(require '[libpython-clj.python :refer [py..]])
+(require '[libpython-clj.require :refer [require-python pydafy]])
+(require '[clojure.datafy :refer [datafy]])
+(require-python 'requests)
+
+(defmethod pydafy 'requests.models.Response [r]
+  (py.. r -content (decode "latin-1")))
+
+;;(with-meta 
+  (-> "https://www.google.com" requests/get datafy) 
+;{:p/render-as :p/phtml} )
+;; @@
+
+;; @@ [clj]
+(require '[libpython-clj.python :refer [py..]])
+(require '[libpython-clj.require :refer [require-python pydafy]])
+(require '[clojure.datafy :refer [datafy]])
+(require-python 'requests)
+
+(defmethod pydafy 'requests.models.Response [r]
+  (py.. r -content (decode "latin-1")))
+
+(-> "https://www.google.com" requests/get);  datafy) 
+;; @@
+
+;; @@ [clj]
+^:R [:p/frisk (datafy-module numpy/linspace)]
+;; @@
+
+;; @@ [clj]
+(require-python '[numpy :bind-ns]
+^:R [:p/frisk (datafy numpy)]
+
+;; @@
+
+;; @@ [clj]
+^:R [:p/frisk (^:R [:p/frisk (datafy-module numpy/linspace)]datafy-module numpy/linspace)]^:R [:p/frisk (datafy-module numpy/linspace)]^:R [:p/frisk (datafy-module numpy/linspace)]
+;; @@

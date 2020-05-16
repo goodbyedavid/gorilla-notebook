@@ -3,12 +3,11 @@
   (:require
    [taoensso.timbre :refer-macros (info)]
    [cljs.reader :as rd]
-
    [reagent.core :as r]
    [re-frame.core :refer [reg-event-db reg-event-fx dispatch]]
    [pinkgorilla.components.localstorage :refer [ls-get ls-set!]]
    [pinkgorilla.kernel.cljs :as cljs-kernel]
-   [pinkgorilla.kernel.nrepl :refer [clj]]))
+   [pinkgorilla.kernel.nrepl :refer [clj clj-eval-ignore-result]]))
 
 
 ;; Dialog Visibility Management
@@ -81,7 +80,7 @@
    (let [secrets (get-in db [:settings :secrets])
          secrets (if (nil? secrets) {} secrets)]
      (info "setting clj repl secrets..")
-     (clj "pinkgorilla.notebook.secret/set-secrets!" secrets)
+     (clj-eval-ignore-result "pinkgorilla.notebook.secret/set-secrets!" secrets)
      {})))
 
 (reg-event-db

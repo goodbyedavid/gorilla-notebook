@@ -1,7 +1,6 @@
 (ns pinkgorilla.notebook-app.serving-with-httpkit
   (:require
    [clojure.tools.logging :as log]
-   ;[ring.adapter.jetty9 :as jetty-ws]
    [ring.util.response :as resp]
    [compojure.core :as comp]
    [de.otto.tesla.serving-with-httpkit :as tesla-httpkit]
