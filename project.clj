@@ -113,7 +113,7 @@
                          [org.pinkgorilla/gorilla-renderable "3.0.7"]
                          [org.pinkgorilla/gorilla-middleware "0.2.23"]
                          [org.pinkgorilla/gorilla-renderable-ui "0.1.33"]
-                         [org.pinkgorilla/gorilla-ui "0.1.32"]
+                         [org.pinkgorilla/gorilla-ui "0.1.34"]
                          [org.pinkgorilla/notebook-encoding "0.0.31"]
                          [org.pinkgorilla/gorilla-explore "0.1.20"]
                          [org.pinkgorilla/kernel-cljs-shadowdeps "0.0.12"]
