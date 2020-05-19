@@ -4,7 +4,7 @@
    [cljs.core.async :as async  :refer (<! >! put! chan)]
    [re-frame.core :refer [reg-event-db dispatch-sync dispatch]]
    [taoensso.encore :as encore :refer-macros (have have?)]
-   [taoensso.timbre :as timbre :refer-macros (tracef debugf infof warnf errorf)]
+   [taoensso.timbre :as timbre :refer-macros (tracef debugf infof warnf errorf trace)]
    [taoensso.sente :as sente :refer (cb-success?)]
    [taoensso.sente.packers.transit :as sente-transit] ;; Optional, for Transit encoding
    )
@@ -59,8 +59,8 @@
 
 
 
-;; This is the main event handler; If we want to do cool things with other kinds of data going back and forth,
-;; this is where we'll inject it.
+;; This is the main event handler; If we want to do cool things with other kinds of data 
+;; going back and forth, this is where we'll inject it.
 (defmethod -event-msg-handler :chsk/recv
   [{:as ev-msg :keys [?data]}]
   (let [[id msg] ?data]
@@ -69,6 +69,7 @@
       ;:pinkie/heartbeat (debugf "Pinkie Heartbeat: %s" msg)
       :pinkie/code-add (dispatch [:notebook-add-code msg])
       :pinkie/result-set (dispatch [:notebook-set-result msg])
+      :chsk/ws-ping (trace "pinkie ping rcvd")
       (debugf "Pinkie Unhandled server event: %s" ?data))))
 
 

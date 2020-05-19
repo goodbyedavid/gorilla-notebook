@@ -19,6 +19,7 @@
    ;PinkGorilla Notebook
    [pinkgorilla.notifications :refer [add-notification notification]]
    [pinkgorilla.kernel.cljs-helper :refer [send-value]]
+   [pinkgorilla.util :refer [application-url ws-origin]]
    ; bring the specs into scope:
    [pinkgorilla.kernel.nrepl-specs]))
 
@@ -118,21 +119,27 @@
    it has finished sending stacktrace information, we fire an event which will cause the worksheet to
    render the stacktrace data in the appropriate place."
   [err segment-id]
-  (let [error (atom {:error-text err
+  (let [_ (info "stacktrace-request for err: " err)
+        warning? (str/starts-with? err "WARNING")
+        error (atom {:error-text err
                      :segment-id segment-id})] ; awb99: does this preserve state ???
-    (send-cider-message!
-     {:op "stacktrace"}
-     (fn [msg] ; CALLBACK THAT PROCESS CIDER MESSAGES
-       (let [status (:status msg)]
-         (info "err status: " status)
-         (if (contains? status :done)
-           (dispatch [:evaluator:error-response @error])
-           (swap! error
-                  (fn [err ex]
-                    (if (:exception err)
-                      (assoc-in err [:exception :cause] (:exception ex))
-                      (merge ex err)))
-                  {:exception msg})))))))
+    (if warning?
+      ; warning -> done
+      (dispatch [:evaluator:error-response @error])
+      ;error -> get stacktrace
+      (send-cider-message!
+       {:op "stacktrace"}
+       (fn [msg] ; CALLBACK THAT PROCESS CIDER MESSAGES
+         (let [status (:status msg)]
+           (info "err status: " status)
+           (if (contains? status :done)
+             (dispatch [:evaluator:error-response @error])
+             (swap! error
+                    (fn [err ex]
+                      (if (:exception err)
+                        (assoc-in err [:exception :cause] (:exception ex))
+                        (merge ex err)))
+                    {:exception msg}))))))))
 
 
 #_(defn process-msg-notebook-segment
@@ -251,27 +258,30 @@
     (let [feed (<! (ws-ch ws-url {:format :json}))]
       feed))
 
-(defn start-repl! [ws-url]
-  (go-loop [{:keys [ws-channel error]} (<! (ws-ch ws-url {:format :edn}))
-            new-session true]
-    (if-not error
-      (let [msg-ch (chan)]
-        (swap! ws-repl assoc :channel msg-ch)
-        (when new-session
-          (go (>! msg-ch {:op "clone"})))
-        (receive-msgs! ws-channel msg-ch)
-        (loop []
-          (when-let [msg (<! msg-ch)]
-            (>! ws-channel msg)
-            (recur)))
-        (<! (timeout 3000))
-        (recur (<! (ws-ch ws-url {:format :edn}))
-               false))
-      (let [session-id (:session-id @ws-repl)]
-        (add-notification (notification :danger (str "clj-kernel error: " error " - trying to recover with session " session-id)))
-        (<! (timeout 3000))
-        (recur (<! (ws-ch ws-url {:format :edn}))
-               (nil? session-id))))))
+(defn start-repl!
+  ([]
+   (start-repl! (ws-origin "repl" (application-url))))
+  ([ws-url]
+   (go-loop [{:keys [ws-channel error]} (<! (ws-ch ws-url {:format :edn}))
+             new-session true]
+     (if-not error
+       (let [msg-ch (chan)]
+         (swap! ws-repl assoc :channel msg-ch)
+         (when new-session
+           (go (>! msg-ch {:op "clone"})))
+         (receive-msgs! ws-channel msg-ch)
+         (loop []
+           (when-let [msg (<! msg-ch)]
+             (>! ws-channel msg)
+             (recur)))
+         (<! (timeout 3000))
+         (recur (<! (ws-ch ws-url {:format :edn}))
+                false))
+       (let [session-id (:session-id @ws-repl)]
+         (add-notification (notification :danger (str "clj-kernel error: " error " - trying to recover with session " session-id)))
+         (<! (timeout 3000))
+         (recur (<! (ws-ch ws-url {:format :edn}))
+                (nil? session-id)))))))
 
 
 ;; nrepl evals

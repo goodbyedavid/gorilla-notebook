@@ -4,7 +4,6 @@
    ;[taoensso.timbre :refer-macros (info)]
    [re-frame.core :refer [reg-event-db dispatch]]
    ;[pinkgorilla.events.helper :refer [text-matches-re default-error-handler  check-and-throw  standard-interceptors]]
-   [pinkgorilla.util :refer [application-url ws-origin]]
    [pinkgorilla.kernel.nrepl :refer [start-repl!]]))
 
 (reg-event-db
@@ -63,5 +62,5 @@
 (reg-event-db
  :kernel-clj-connect
  (fn [db [_]]
-   (start-repl! (ws-origin "repl/" (application-url)))
+   (start-repl!)
    db))

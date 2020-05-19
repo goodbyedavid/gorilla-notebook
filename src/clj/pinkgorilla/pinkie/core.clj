@@ -127,7 +127,7 @@
 
 (def broadcast-enabled?_ (atom true))
 
-(defn start-heartbeats!
+#_(defn start-heartbeats!
   "setup a loop to broadcast an event to all connected users every second"
   []
   (let [broadcast!
@@ -148,7 +148,7 @@
 (comment
    (println "clients: " @connected-uids)
   
-  (start-heartbeats!)
+  ;(start-heartbeats!)
   (send-all! [:pinkie/broadcast {:a 13}])
   
   ;

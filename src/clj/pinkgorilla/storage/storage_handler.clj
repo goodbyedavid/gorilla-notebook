@@ -18,20 +18,20 @@
 (defn save-notebook
   [req]
   (let [params (:params req)
-        _ (info "saving notebook with params: " (dissoc params :notebook :tokens)) ; do not show full notebook in log.
         stype (keyword (:storagetype params))
         notebook (:notebook params)
         tokens (:tokens params)
-        _ (info "saving notebook with tokens: " (keys tokens)) ; make sure we dont log secrets
+        message (str "params: " (dissoc params :notebook :tokens)
+                     " tokens: " (keys tokens)) ; make sure we dont log secrets
         storage-params (dissoc params :notebook :storagetype :tokens) ; notebook-content is too big for logging.
         ;_ (info "Saving type: " stype " params: " storage-params)
         storage (query-params-to-storage stype storage-params)
         ;_ (info "Notebook: " notebook)
         ]
     (if (nil? storage)
-      (throw (Exception. (str "Cannot save to storage - storage is nil! " stype)))
+      (throw (Exception. (str "Cannot save to storage - storage is nil! " stype " " message)))
       (do
-        (info "Saving: " storage)
+        (info "Saving: " message " storage: " storage)
         (res/response (storage-save storage notebook tokens))))))
 
 (defn load-notebook

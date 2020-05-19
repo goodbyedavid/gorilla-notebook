@@ -80,7 +80,7 @@
 
 
 ; send heartbeats to all connected websockets.
-(future
+#_(future
   (loop []
     (doseq [client @clients]
       (http/send! (key client)

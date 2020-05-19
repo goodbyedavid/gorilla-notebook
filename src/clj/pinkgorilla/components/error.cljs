@@ -35,6 +35,7 @@
                                       #js {})
       :reagent-render (fn [comp]
                         (if @error
-                          [:div "Something went wrong."]
+                          [:div "Something went wrong."
+                           [:p (str @error)]]
                           comp))})))
 

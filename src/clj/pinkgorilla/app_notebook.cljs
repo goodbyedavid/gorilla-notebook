@@ -35,7 +35,7 @@
     (dispatch-sync [:load-config])
     (mount-notebook-app)
     (when read-write
-      (nrepl-kernel/start-repl! (ws-origin "repl" app-url)))
+      (nrepl-kernel/start-repl!)); (ws-origin "repl" app-url)))
     (if (not route)
       (routes/nav! "/new")
       (secretary/dispatch! route))))
